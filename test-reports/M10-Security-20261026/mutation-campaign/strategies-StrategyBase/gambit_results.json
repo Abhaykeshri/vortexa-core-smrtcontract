@@ -1,0 +1,66 @@
+[
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -85,7 +85,8 @@\n      * @param shapes_ Deployed ShapeLibrary.\n      */\n     constructor(IShapeLibrary shapes_) {\n-        if (address(shapes_) == address(0)) revert ZeroAddress();\n+        /// IfStatementMutation(`address(shapes_) == address(0)` |==> `false`) of: `if (address(shapes_) == address(0)) revert ZeroAddress();`\n+        if (false) revert ZeroAddress();\n         shapes = shapes_;\n     }\n \n",
+    "id": "1",
+    "name": "mutants\\1\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -99,7 +99,8 @@\n     function _floorToSpacing(int256 tick, int256 spacing) internal pure returns (int256 result) {\n         if (spacing <= 0) revert InvalidRange();\n         result = tick / spacing;\n-        if (tick < 0 && tick % spacing != 0) --result;\n+        /// IfStatementMutation(`tick < 0 && tick % spacing != 0` |==> `true`) of: `if (tick < 0 && tick % spacing != 0) --result;`\n+        if (true) --result;\n         result *= spacing;\n     }\n \n",
+    "id": "2",
+    "name": "mutants\\2\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "UnaryOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -99,7 +99,8 @@\n     function _floorToSpacing(int256 tick, int256 spacing) internal pure returns (int256 result) {\n         if (spacing <= 0) revert InvalidRange();\n         result = tick / spacing;\n-        if (tick < 0 && tick % spacing != 0) --result;\n+        /// UnaryOperatorMutation(`--` |==> `~`) of: `if (tick < 0 && tick % spacing != 0) --result;`\n+        if (tick < 0 && tick % spacing != 0) ~result;\n         result *= spacing;\n     }\n \n",
+    "id": "3",
+    "name": "mutants\\3\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "UnaryOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -111,7 +111,8 @@\n      * @return result Smallest aligned tick not below `tick`.\n      */\n     function _ceilToSpacing(int256 tick, int256 spacing) internal pure returns (int256 result) {\n-        result = -_floorToSpacing(-tick, spacing);\n+        /// UnaryOperatorMutation(`-` |==> `--`) of: `result = -_floorToSpacing(-tick, spacing);`\n+        result = -_floorToSpacing(--tick, spacing);\n     }\n \n     /**\n",
+    "id": "4",
+    "name": "mutants\\4\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -124,7 +124,8 @@\n     function _edges(Band[] calldata bands) internal pure returns (int24 lower, int24 upper) {\n         if (bands.length == 0) revert InvalidBands();\n         lower = bands[0].tickLower;\n-        upper = bands[bands.length - 1].tickUpper;\n+        /// AssignmentMutation(`bands[bands.length - 1].tickUpper` |==> `(-1)`) of: `upper = bands[bands.length - 1].tickUpper;`\n+        upper = (-1);\n     }\n \n     /**\n",
+    "id": "5",
+    "name": "mutants\\5\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "SwapArgumentsOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -203,7 +203,8 @@\n         (int24 lower, int24 upper) = _edges(bands);\n         if (_below(config)) {\n             if (int256(tick) >= int256(upper) + int256(uint256(config.trailTicks))) return (true, TRAIL);\n-            if (config.lockOnFill && tick < lower) return (true, FILLED);\n+            /// SwapArgumentsOperatorMutation(`tick < lower` |==> `lower < tick`) of: `if (config.lockOnFill && tick < lower) return (true, FILLED);`\n+            if (config.lockOnFill && lower < tick) return (true, FILLED);\n         } else {\n             if (int256(tick) < int256(lower) - int256(uint256(config.trailTicks))) return (true, TRAIL);\n             if (config.lockOnFill && tick >= upper) return (true, FILLED);\n",
+    "id": "6",
+    "name": "mutants\\6\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -230,7 +230,8 @@\n         }\n         int256 spacing = int256(config.poolKey.tickSpacing);\n         int256 anchor =\n-            _below(config) ? _floorToSpacing(int256(tick), spacing) : _ceilToSpacing(int256(tick) + 1, spacing);\n+            /// BinaryOpMutation(`+` |==> `*`) of: `_below(config) ? _floorToSpacing(int256(tick), spacing) : _ceilToSpacing(int256(tick) + 1, spacing);`\n+            _below(config) ? _floorToSpacing(int256(tick), spacing) : _ceilToSpacing(int256(tick)*1, spacing);\n         if (\n             anchor < type(int24).min || anchor > type(int24).max || anchor < MIN_TICK - spacing\n                 || anchor > MAX_TICK + spacing\n",
+    "id": "7",
+    "name": "mutants\\7\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -230,7 +230,8 @@\n         }\n         int256 spacing = int256(config.poolKey.tickSpacing);\n         int256 anchor =\n-            _below(config) ? _floorToSpacing(int256(tick), spacing) : _ceilToSpacing(int256(tick) + 1, spacing);\n+            /// BinaryOpMutation(`+` |==> `**`) of: `_below(config) ? _floorToSpacing(int256(tick), spacing) : _ceilToSpacing(int256(tick) + 1, spacing);`\n+            _below(config) ? _floorToSpacing(int256(tick), spacing) : _ceilToSpacing(int256(tick)**1, spacing);\n         if (\n             anchor < type(int24).min || anchor > type(int24).max || anchor < MIN_TICK - spacing\n                 || anchor > MAX_TICK + spacing\n",
+    "id": "8",
+    "name": "mutants\\8\\src\\strategies\\StrategyBase.sol",
+    "original": "src\\strategies\\StrategyBase.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "lib/forge-std": {
+    "tag": {
+      "name": "v1.17.0",
+      "rev": "f3dae6e6ee381f25eb6a246f7da9b85c91a68219"
+    }
+  },
+  "lib/openzeppelin-contracts": {
+    "tag": {
+      "name": "v5.7.0",
+      "rev": "cab19933c33c2ad1d4c7a84864a3601dddfd16f3"
+    }
+  },
+  "lib/universal-router": {
+    "rev": "64027f3372aa235734207c4e05667204f6f927e1"
+  },
+  "lib/v4-core": {
+    "tag": {
+      "name": "v4.0.0",
+      "rev": "e50237c43811bd9b526eff40f26772152a42daba"
+    }
+  },
+  "lib/v4-periphery": {
+    "rev": "9969eec44cfdf07e24b41de47f40276a58401976"
+  },
+  "lib\\forge-std": {
+    "rev": "0258fe875e1d8e207c1eb7175e542ea32356773c"
+  },
+  "lib\\openzeppelin-contracts": {
+    "rev": "6c2ab375a9c7db0fa8c21fba1ed3b2057f75dd75"
+  },
+  "lib\\v4-core": {
+    "rev": "46c6834698c48bc4a463a86d8420f4eb1d7f3b75"
+  },
+  "lib\\v4-periphery": {
+    "rev": "9969eec44cfdf07e24b41de47f40276a58401976"
+  }
+}

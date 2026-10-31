@@ -1,0 +1,18 @@
+[
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -208,7 +208,8 @@\n         uint256 afterOut = output.balanceOfSelf();\n         if (afterOut < beforeOut) revert InsufficientOutput();\n         amountOut = afterOut - beforeOut;\n-        if (amountOut < minAmountOut || amountOut < floor) revert InsufficientOutput();\n+        /// BinaryOpMutation(`||` |==> `**`) of: `if (amountOut < minAmountOut || amountOut < floor) revert InsufficientOutput();`\n+        if (amountOut < minAmountOut**amountOut < floor) revert InsufficientOutput();\n         input.transfer(msg.sender, refund); // aderyn-fp(unsafe-erc20-operation)\n         output.transfer(msg.sender, amountOut); // aderyn-fp(unsafe-erc20-operation)\n         emit SwapExecuted(msg.sender, key, zeroForOne, amountIn, amountOut);\n",
+    "id": "1",
+    "name": "mutants\\1\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -208,7 +208,8 @@\n         uint256 afterOut = output.balanceOfSelf();\n         if (afterOut < beforeOut) revert InsufficientOutput();\n         amountOut = afterOut - beforeOut;\n-        if (amountOut < minAmountOut || amountOut < floor) revert InsufficientOutput();\n+        /// BinaryOpMutation(`<` |==> `/`) of: `if (amountOut < minAmountOut || amountOut < floor) revert InsufficientOutput();`\n+        if (amountOut/minAmountOut || amountOut < floor) revert InsufficientOutput();\n         input.transfer(msg.sender, refund); // aderyn-fp(unsafe-erc20-operation)\n         output.transfer(msg.sender, amountOut); // aderyn-fp(unsafe-erc20-operation)\n         emit SwapExecuted(msg.sender, key, zeroForOne, amountIn, amountOut);\n",
+    "id": "2",
+    "name": "mutants\\2\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

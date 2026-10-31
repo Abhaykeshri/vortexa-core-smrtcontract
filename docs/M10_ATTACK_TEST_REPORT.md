@@ -1,0 +1,23 @@
+# M10 Attack Test Report
+
+The table maps Section 12.4 to executable evidence. “Pass” means the cited Foundry scenario passed locally; it does not erase the residual risk described in the last column.
+
+| ID | Attack and attacker action | Expected defense / actual behavior | Status | Evidence | Remaining risk |
+| --- | --- | --- | --- | --- | --- |
+| A | Tiny first deposit, large donation, victim deposit, attacker exit | Dead shares and floor rounding prevent attacker profit; fuzzed one-sided variant also never profits | Pass | `VaultRealV4Attacks.t.sol`, `VaultM7RealV4Attacks.t.sol` | Victim/user-facing slippage must still be set |
+| B | Direct token/ETH donations to vault/executor/PositionManager | Donated value cannot be spent by the donor or block later operations | Pass | `VaultRealV4Attacks.t.sol`, `VaultM6RealV4Attacks.t.sol`, `M9ZapAttacks.t.sol` | Donations benefit shareholders or remain isolated |
+| C | Push v4 spot beyond oracle tolerance before deposit | PriceGuard returns untrusted and deposit/rebalance/Zap revert atomically | Pass | `PriceGuardAttacks.t.sol`, `VaultAttacks.t.sol`, `M9ZapAttacks.t.sol` | Oracle liveness is required for entries/rebalances |
+| D | Push spot to the maximum allowed deviation | Accepted by design; modeled extraction stays within the documented tolerance bound | Pass | `PriceGuardAdvancedAttacks.t.sol`, `VaultM7RealV4Attacks.t.sol` | Non-zero bounded MEV remains; use user minimums/private relay |
+| E | Front-run and back-run keeper rebalance | Oracle floor and final value brake bound loss or revert | Pass | `VaultM6RealV4Attacks.t.sol` | Keeper liveness can be delayed by manipulation |
+| F | Stale, zero, negative, future, reverting oracle | Entries/rebalances fail closed; in-kind withdrawals remain available while paused/oracle-down | Pass | `PriceGuard.t.sol`, `PriceGuardAttacks.t.sol`, `VaultM5RealV4Attacks.t.sol` | Priced ERC-4626 exits may close; pair withdrawal remains escape hatch |
+| G | Manipulate thin v3 fallback | Minimum TWAP window, token matching, and observation checks apply; economic limitation is documented | Pass with known limitation | `PriceGuardAttacks.t.sol` | Correlated oracle/fallback manipulation while Chainlink is unavailable |
+| H | Token callback re-enters or moves price | Shared reentrancy guard and post-callback price checks prevent extraction | Pass | `VaultRealV4Attacks.t.sol`, `VaultBranches.t.sol` | Read-only callback observations are documented |
+| I | Native receiver re-enters refund/withdraw | CEI ordering and reentrancy guard prevent a second state-changing entry | Pass | `VaultRealV4Controls.t.sol`, `VaultM5RealV4Attacks.t.sol`, `M9ZapAttacks.t.sol` | Receiver can deliberately revert its own transaction |
+| J | Fee-on-transfer, false/no-return, blacklist, zero-transfer-revert, unusual decimals, hostile callback | Exact balance deltas reject shortfall; SafeERC20 handles return variants; zero transfers are skipped; invalid metadata fails closed | Pass for supported policy | `CurrencyLibBreaking.t.sol`, `SwapExecutor.t.sol`, `Vault.t.sol`, `PriceGuard.t.sol` | Rebasing/pausable tokens are not supported assets and require factory allowlisting policy |
+| K | Transfer foreign v4 NFT to vault | Callback accepts NFTs only inside the authorized mint window | Pass | `VaultRealV4Attacks.t.sol`, `VaultBranches.t.sol` | None identified |
+| L | Keeper submits hostile center, route, band plan, swap size or slippage | Keeper identity, hard caps, strategy revalidation, oracle floor, and loss brake reject it | Pass | `VaultM6RealV4Attacks.t.sol`, `VaultM6.t.sol` | Compromised keeper can withhold service, not seize funds |
+| M | Guardian attempts unpause/fund movement/withdrawal block | Guardian can only pause; owner/timelock unpauses; pair withdrawals bypass pause | Pass | `VaultRealV4Controls.t.sol`, `M8.t.sol` | Timelock delay extends paused-entry downtime |
+| N | Timelock changes registries/fees/implementation | Existing vault immutable configuration is unchanged; no privileged principal transfer exists | Pass with trust assumption | `M8.t.sol`, `M8FactoryInvariant.t.sol` | Governance can set future policy and protocol fee up to approved cap |
+| O | Repeated dust deposits/withdrawals and dust-first griefing | Tiny unmintable deposits revert; later deposits and compound scale independently of dust liquidity; loops remain capped at five bands | Pass | `VaultBranches.t.sol`, `VaultM7RealV4Attacks.t.sol`, `ShapeLibraryInvariant.t.sol` | Swap-free rebalance needs at least 1 bp for settlement dust |
+
+No production code was changed during M10 attack validation. The suite validated the existing defenses; accepted design limitations are retained in `docs/known-issues.md`.

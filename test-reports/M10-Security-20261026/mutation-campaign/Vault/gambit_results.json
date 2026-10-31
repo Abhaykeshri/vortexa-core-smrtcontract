@@ -1,0 +1,66 @@
+[
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -539,7 +539,8 @@\n      */\n     function previewMint(uint256 shares) public view returns (uint256 assets) {\n         uint256 supply = totalSupply;\n-        if (supply == 0) return shares + MIN_LOCK_SHARES;\n+        /// BinaryOpMutation(`+` |==> `-`) of: `if (supply == 0) return shares + MIN_LOCK_SHARES;`\n+        if (supply == 0) return shares-MIN_LOCK_SHARES;\n         assets = _mulDivUp(shares, totalAssets(), supply);\n     }\n \n",
+    "id": "1",
+    "name": "mutants\\1\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -647,7 +647,8 @@\n      */\n     function mint(uint256 shares, address receiver) external nonReentrant returns (uint256 assets) {\n         if (shares > maxMint(receiver)) revert ExceedsMax();\n-        assets = previewMint(shares);\n+        /// AssignmentMutation(`previewMint(shares)` |==> `1`) of: `assets = previewMint(shares);`\n+        assets = 1;\n         uint256 minted = _depositAsset(assets, receiver);\n         if (minted < shares) revert SlippageExceeded();\n         emit Deposit(msg.sender, receiver, assets, minted);\n",
+    "id": "2",
+    "name": "mutants\\2\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -1049,7 +1049,8 @@\n         budget1 = amount1;\n         if (_bands.length == 0) {\n             uint16[] memory weights;\n-            (target, weights, budget0, budget1) = _delegateDepositPlan(sp, tick, amount0, amount1);\n+            /// DeleteExpressionMutation(`(target, weights, budget0, budget1) = _delegateDepositPlan(sp, tick, amount0, amount1)` |==> `assert(true)`) of: `(target, weights, budget0, budget1) = _delegateDepositPlan(sp, tick, amount0, amount1);`\n+            assert(true);\n             (sp,,,) = stateView.getSlot0(_poolId);\n             addLiq = _liquidityForNewBands(sp, target, weights, budget0, budget1);\n         } else {\n",
+    "id": "3",
+    "name": "mutants\\3\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "UnaryOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -1091,7 +1091,8 @@\n             unit0 += a0;\n             unit1 += a1;\n             unchecked {\n-                ++i;\n+                /// UnaryOperatorMutation(`++` |==> `~`) of: `++i;`\n+                ~i;\n             }\n         }\n         uint256 scale = _scale(unit0, unit1, amount0, amount1, target.length);\n",
+    "id": "4",
+    "name": "mutants\\4\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -1258,7 +1258,8 @@\n      * @return value Native value to forward.\n      */\n     function _nativeIn(uint256 amount0) private view returns (uint256 value) {\n-        value = _cfg.poolKey.currency0.isNative() ? amount0 : 0;\n+        /// AssignmentMutation(`_cfg.poolKey.currency0.isNative() ? amount0 : 0` |==> `0`) of: `value = _cfg.poolKey.currency0.isNative() ? amount0 : 0;`\n+        value = 0;\n     }\n \n     /**\n",
+    "id": "5",
+    "name": "mutants\\5\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -1403,7 +1403,8 @@\n     function _depositAsset(uint256 assets, address receiver) private returns (uint256 shares) {\n         if (paused) revert IsPaused();\n         if (filled || !_assetDepositsOpen()) revert DepositNotAllowed();\n-        if (receiver == address(0)) revert ZeroAddress();\n+        /// IfStatementMutation(`receiver == address(0)` |==> `false`) of: `if (receiver == address(0)) revert ZeroAddress();`\n+        if (false) revert ZeroAddress();\n         _requireTrustedPrice();\n         uint256 valueBefore = totalAssets();\n         _pullExact(_cfg.poolKey.currency1, msg.sender, assets, 0);\n",
+    "id": "6",
+    "name": "mutants\\6\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -1443,7 +1443,8 @@\n         returns (uint256 scale)\n     {\n         uint256 dust = SETTLEMENT_DUST_PER_BAND * bandCount;\n-        uint256 budget0 = amount0 > dust ? amount0 - dust : 0;\n+        /// BinaryOpMutation(`-` |==> `%`) of: `uint256 budget0 = amount0 > dust ? amount0 - dust : 0;`\n+        uint256 budget0 = amount0 > dust ? amount0%dust : 0;\n         uint256 budget1 = amount1 > dust ? amount1 - dust : 0;\n         scale = type(uint256).max;\n         if (unit0 > 0) scale = Math.mulDiv(budget0, LIQUIDITY_PROBE, unit0);\n",
+    "id": "7",
+    "name": "mutants\\7\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -1611,7 +1611,8 @@\n      */\n     function _value(uint256 amount0, uint256 amount1, uint160 sp) private pure returns (uint256 value_) {\n         uint256 priceX96 = Math.mulDiv(sp, sp, Q96);\n-        value_ = Math.mulDiv(amount0, priceX96, Q96) + amount1;\n+        /// BinaryOpMutation(`+` |==> `**`) of: `value_ = Math.mulDiv(amount0, priceX96, Q96) + amount1;`\n+        value_ = Math.mulDiv(amount0, priceX96, Q96)**amount1;\n     }\n \n     /**\n",
+    "id": "8",
+    "name": "mutants\\8\\src\\Vault.sol",
+    "original": "src\\Vault.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

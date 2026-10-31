@@ -1,0 +1,75 @@
+{
+    "exitcode": 0,
+    "test_results": {
+        "test/formal/M10Halmos.t.sol:M10HalmosTest": [
+            {
+                "name": "check_liquidity_round_trip_never_creates_value(uint96,uint96)",
+                "exitcode": 0,
+                "num_models": 0,
+                "models": [],
+                "num_paths": [
+                    78,
+                    24,
+                    0
+                ],
+                "time": [
+                    3.696165599998494,
+                    3.0918576999974903,
+                    0.6043005999999878
+                ],
+                "num_bounded_loops": 0
+            },
+            {
+                "name": "check_shape_bands_are_bounded(uint8)",
+                "exitcode": 0,
+                "num_models": 0,
+                "models": [],
+                "num_paths": [
+                    9,
+                    8,
+                    0
+                ],
+                "time": [
+                    0.10733389999950305,
+                    0.1073182000000088,
+                    1.0799998563015833e-05
+                ],
+                "num_bounded_loops": 0
+            },
+            {
+                "name": "check_share_floor_decomposition(uint96,uint8)",
+                "exitcode": 0,
+                "num_models": 0,
+                "models": [],
+                "num_paths": [
+                    6,
+                    2,
+                    0
+                ],
+                "time": [
+                    0.04160779999801889,
+                    0.04159549999894807,
+                    8.899998647393659e-06
+                ],
+                "num_bounded_loops": 0
+            },
+            {
+                "name": "check_share_round_up_decomposition(uint96,uint8,bool)",
+                "exitcode": 0,
+                "num_models": 0,
+                "models": [],
+                "num_paths": [
+                    19,
+                    6,
+                    0
+                ],
+                "time": [
+                    0.3054052000006777,
+                    0.204830700000457,
+                    0.10056780000013532
+                ],
+                "num_bounded_loops": 0
+            }
+        ]
+    }
+}

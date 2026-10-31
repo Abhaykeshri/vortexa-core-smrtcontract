@@ -1,0 +1,42 @@
+[
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -199,7 +199,8 @@\n         _executeRouter(key, zeroForOne, amountIn, minAmountOut, input, output);\n \n         uint256 refund;\n-        if (!input.isNative()) {\n+        /// IfStatementMutation(`!input.isNative()` |==> `false`) of: `if (!input.isNative()) {`\n+        if (false) {\n             permit2.approve(Currency.unwrap(input), address(universalRouter), 0, uint48(block.timestamp)); // aderyn-fp(unsafe-erc20-operation)\n             IERC20(Currency.unwrap(input)).forceApprove(address(permit2), 0);\n             uint256 afterIn = input.balanceOfSelf();\n",
+    "id": "1",
+    "name": "mutants\\1\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -224,7 +224,8 @@\n      */\n     function _pullExact(Currency input, uint256 amountIn) private returns (uint256 beforeIn) {\n         beforeIn = input.balanceOfSelf();\n-        IERC20(Currency.unwrap(input)).safeTransferFrom(msg.sender, address(this), amountIn);\n+        /// DeleteExpressionMutation(`IERC20(Currency.unwrap(input)).safeTransferFrom(msg.sender, address(this), amountIn)` |==> `assert(true)`) of: `IERC20(Currency.unwrap(input)).safeTransferFrom(msg.sender, address(this), amountIn);`\n+        assert(true);\n         if (input.balanceOfSelf() - beforeIn != amountIn) revert InputBalanceMismatch();\n     }\n \n",
+    "id": "2",
+    "name": "mutants\\2\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -225,7 +225,8 @@\n     function _pullExact(Currency input, uint256 amountIn) private returns (uint256 beforeIn) {\n         beforeIn = input.balanceOfSelf();\n         IERC20(Currency.unwrap(input)).safeTransferFrom(msg.sender, address(this), amountIn);\n-        if (input.balanceOfSelf() - beforeIn != amountIn) revert InputBalanceMismatch();\n+        /// BinaryOpMutation(`-` |==> `**`) of: `if (input.balanceOfSelf() - beforeIn != amountIn) revert InputBalanceMismatch();`\n+        if (input.balanceOfSelf()**beforeIn != amountIn) revert InputBalanceMismatch();\n     }\n \n     /**\n",
+    "id": "3",
+    "name": "mutants\\3\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -283,7 +283,8 @@\n         pure\n         returns (uint256 floor)\n     {\n-        if (key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0) {\n+        /// IfStatementMutation(`key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0` |==> `true`) of: `if (key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0) {`\n+        if (true) {\n             revert UntrustedPrice();\n         }\n         floor = SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, MAX_SLIPPAGE_BPS);\n",
+    "id": "4",
+    "name": "mutants\\4\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -283,7 +283,8 @@\n         pure\n         returns (uint256 floor)\n     {\n-        if (key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0) {\n+        /// IfStatementMutation(`key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0` |==> `false`) of: `if (key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0) {`\n+        if (false) {\n             revert UntrustedPrice();\n         }\n         floor = SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, MAX_SLIPPAGE_BPS);\n",
+    "id": "5",
+    "name": "mutants\\5\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

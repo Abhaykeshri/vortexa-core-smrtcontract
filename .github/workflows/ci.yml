@@ -1,0 +1,131 @@
+name: M0-M10 Security CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  foundry:
+    name: Format, build, test, coverage, gas, licenses
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pinned dependencies
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.4
+
+      - name: Check formatting
+        run: forge fmt --check
+
+      - name: Enforce source licenses and dependency policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing="$(find src script test -name '*.sol' -print0 | xargs -0 grep -L '^// SPDX-License-Identifier:' || true)"
+          test -z "$missing" || { printf 'Missing SPDX header:\n%s\n' "$missing"; exit 1; }
+          # Reject BUSL-licensed sources by their SPDX header (comments may mention BUSL, e.g. SqrtPriceMath).
+          ! grep -RniE '^// SPDX-License-Identifier:.*(BUSL|Business Source)' src
+
+      - name: Build with contract-size checks
+        run: forge build --sizes
+
+      - name: Run CI test profile
+        run: forge test --profile ci
+
+      # Fuzz and invariant gas depends on the random seed, so the snapshot covers deterministic tests only.
+      # Regenerate after gas-relevant changes with the same filter:
+      #   FOUNDRY_PROFILE=ci forge snapshot --no-match-test "testFuzz|invariant"
+      - name: Check gas snapshot
+        run: forge snapshot --check --tolerance 1 --no-match-test "testFuzz|invariant"
+
+      # The gate measures production code: test handlers and scripts are excluded from the total.
+      - name: Enforce 95% line and 90% branch coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          forge coverage --report summary --no-match-coverage "^(test|script)/" | tee coverage-summary.txt
+          # Columns are file, lines, statements, branches and functions.
+          line_pct="$(awk -F'|' '/^[[:space:]]*\| Total/ {split($3, a, "%"); gsub(/[[:space:]]/, "", a[1]); print a[1]}' coverage-summary.txt)"
+          branch_pct="$(awk -F'|' '/^[[:space:]]*\| Total/ {split($5, a, "%"); gsub(/[[:space:]]/, "", a[1]); print a[1]}' coverage-summary.txt)"
+          [[ "$line_pct" =~ ^[0-9]+(\.[0-9]+)?$ ]]
+          [[ "$branch_pct" =~ ^[0-9]+(\.[0-9]+)?$ ]]
+          awk -v value="$line_pct" 'BEGIN { exit !(value + 0 >= 95) }'
+          awk -v value="$branch_pct" 'BEGIN { exit !(value + 0 >= 90) }'
+
+  static-analysis:
+    name: Slither and Aderyn
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pinned dependencies
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.4
+
+      - name: Run Slither
+        uses: crytic/slither-action@v0.4.2
+        with:
+          fail-on: high
+
+      - name: Install Aderyn 0.6.8
+        run: npm install --global @cyfrin/aderyn@0.6.8
+
+      - name: Run Aderyn and reject high findings
+        shell: bash
+        run: |
+          set -euo pipefail
+          aderyn .
+          grep -Eq '^\| High \| 0 \|$' report.md
+
+  mainnet-fork:
+    name: Pinned Ethereum mainnet fork
+    runs-on: ubuntu-latest
+    env:
+      # The workflow-wide ci profile excludes test/fork; the fork profile selects exactly those suites.
+      FOUNDRY_PROFILE: fork
+      MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
+    steps:
+      - name: Checkout pinned dependencies
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: v1.8.4
+
+      - name: Require fork RPC secret
+        shell: bash
+        run: test -n "$MAINNET_RPC_URL"
+
+      - name: Run pinned fork suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          fork_block="$(jq -r '.forkBlock' script/config/mainnet.json)"
+          forge test --fork-url "$MAINNET_RPC_URL" --fork-block-number "$fork_block" \
+            --match-path "test/fork/*.t.sol" -vvv | tee fork-tests.txt
+          # A filter that selects nothing exits 0; require the suites to have actually run.
+          # M8MainnetFork intentionally skips because M8 has no deployed mainnet instance; every executable fork
+          # test must pass and the documented skip count must not grow unnoticed.
+          grep -Eq 'Ran [1-9][0-9]* test suites.*: [1-9][0-9]* tests passed, 0 failed, 1 skipped' fork-tests.txt

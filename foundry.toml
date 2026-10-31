@@ -1,0 +1,65 @@
+[profile.default]
+src = "src"
+test = "test"
+libs = ["lib"]
+script = "script"
+
+# Builds
+out = "build/out"
+cache_path = "build/cache"
+
+# Compilers
+solc = "0.8.26"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 200
+bytecode_hash = "none"
+cbor_metadata = false
+fs_permissions = [
+	{ access = "read", path = "./src" },
+	{ access = "read", path = "./script/config" },
+]
+
+# Remappings
+remappings = [
+	"@openzeppelin/=lib/openzeppelin-contracts/",
+	"forge-std/=lib/forge-std/src/",
+	"uni-test/v4-core/=lib/v4-core/",
+	"uni-test/v4-periphery/=lib/v4-periphery/",
+	"@uniswap/v4-core/=lib/v4-periphery/lib/v4-core/",
+	"solmate/=lib/v4-core/lib/solmate/",
+	"permit2/=lib/v4-periphery/lib/permit2/",
+	"universal-router/=lib/universal-router/contracts/",
+	"@uniswap/v4-periphery/=lib/v4-periphery/",
+	"lib/v4-periphery/:@uniswap/v4-core/=lib/v4-periphery/lib/v4-core/",
+]
+
+[fuzz]
+runs = 1000
+
+[invariant]
+runs = 256
+depth = 64
+fail_on_revert = false
+
+[profile.ci]
+fuzz = { runs = 10000 }
+invariant = { runs = 1000, depth = 128 }
+no_match_path = "test/fork/*"
+
+[profile.fork]
+match_path = "test/fork/*"
+
+# Halmos does not execute Foundry's deployCode cheatcode used by dynamic test linking.
+[profile.halmos]
+dynamic_test_linking = false
+
+# RPC urls
+[rpc_endpoints]
+bsc = "https://bsc-dataseed.binance.org/"
+bsc_test = "https://data-seed-prebsc-1-s1.binance.org:8545"
+
+# Etherscan
+[etherscan]
+bsc = { key = "${BSCSCAN_API_KEY}", chain = 56 }
+bsc_test = { key = "${BSCSCAN_API_KEY}", chain = 97 }

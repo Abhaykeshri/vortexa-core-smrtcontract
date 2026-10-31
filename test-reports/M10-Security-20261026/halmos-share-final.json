@@ -1,0 +1,41 @@
+{
+    "exitcode": 1,
+    "test_results": {
+        "test/formal/M10Halmos.t.sol:M10HalmosTest": [
+            {
+                "name": "check_share_floor_round_trip(uint96)",
+                "exitcode": 2,
+                "num_models": 0,
+                "models": [],
+                "num_paths": [
+                    5,
+                    1,
+                    0
+                ],
+                "time": [
+                    305.6123989999978,
+                    0.3746430999999575,
+                    305.2377493000022
+                ],
+                "num_bounded_loops": 0
+            },
+            {
+                "name": "check_share_round_up_is_sufficient(uint96)",
+                "exitcode": 2,
+                "num_models": 0,
+                "models": [],
+                "num_paths": [
+                    11,
+                    1,
+                    0
+                ],
+                "time": [
+                    302.1831962000033,
+                    0.2951528000012331,
+                    301.8880358999995
+                ],
+                "num_bounded_loops": 0
+            }
+        ]
+    }
+}

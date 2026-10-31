@@ -1,0 +1,66 @@
+[
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -19,7 +19,8 @@\n     /**\n      * @notice Fixed-point denominator used by Uniswap square-root prices.\n      */\n-    uint256 internal constant Q96 = 1 << 96;\n+    /// BinaryOpMutation(`<<` |==> `+`) of: `uint256 internal constant Q96 = 1 << 96;`\n+    uint256 internal constant Q96 = 1+96;\n     /**\n      * @notice Probe liquidity used to derive the shape's token ratio.\n      */\n",
+    "id": "1",
+    "name": "mutants\\1\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -48,7 +48,8 @@\n         if (config.poolKey.tickSpacing <= 0 || config.ticksLeft <= 0 || config.ticksRight <= 0) {\n             revert InvalidRange();\n         }\n-        if (config.shapeId == 5 || config.shapeId == 6 || !shapes.isValidShape(config.shapeId)) {\n+        /// IfStatementMutation(`config.shapeId == 5 || config.shapeId == 6 || !shapes.isValidShape(config.shapeId)` |==> `false`) of: `if (config.shapeId == 5 || config.shapeId == 6 || !shapes.isValidShape(config.shapeId)) {`\n+        if (false) {\n             revert InvalidShape();\n         }\n         if (config.driftTicks >= uint24(config.ticksLeft) || config.driftTicks >= uint24(config.ticksRight)) {\n",
+    "id": "2",
+    "name": "mutants\\2\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "SwapArgumentsOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -51,7 +51,8 @@\n         if (config.shapeId == 5 || config.shapeId == 6 || !shapes.isValidShape(config.shapeId)) {\n             revert InvalidShape();\n         }\n-        if (config.driftTicks >= uint24(config.ticksLeft) || config.driftTicks >= uint24(config.ticksRight)) {\n+        /// SwapArgumentsOperatorMutation(`config.driftTicks >= uint24(config.ticksLeft)` |==> `uint24(config.ticksLeft) >= config.driftTicks`) of: `if (config.driftTicks >= uint24(config.ticksLeft) || config.driftTicks >= uint24(config.ticksRight)) {`\n+        if (uint24(config.ticksLeft) >= config.driftTicks || config.driftTicks >= uint24(config.ticksRight)) {\n             revert InvalidDrift();\n         }\n         if (config.trailTicks != 0 || config.lockOnFill) revert InvalidTrail();\n",
+    "id": "3",
+    "name": "mutants\\3\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "SwapArgumentsOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -126,7 +126,8 @@\n         private\n         pure\n     {\n-        if (sqrtPriceX96 == 0 || fee >= FEE_DENOMINATOR) revert InvalidPrice();\n+        /// SwapArgumentsOperatorMutation(`fee >= FEE_DENOMINATOR` |==> `FEE_DENOMINATOR >= fee`) of: `if (sqrtPriceX96 == 0 || fee >= FEE_DENOMINATOR) revert InvalidPrice();`\n+        if (sqrtPriceX96 == 0 || FEE_DENOMINATOR >= fee) revert InvalidPrice();\n         (uint256 unit0, uint256 unit1) = _unitAmounts(plan_, sqrtPriceX96);\n         uint256 priceX96 = Math.mulDiv(sqrtPriceX96, sqrtPriceX96, Q96);\n         if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0) revert InvalidPrice();\n",
+    "id": "4",
+    "name": "mutants\\4\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -129,7 +129,8 @@\n         if (sqrtPriceX96 == 0 || fee >= FEE_DENOMINATOR) revert InvalidPrice();\n         (uint256 unit0, uint256 unit1) = _unitAmounts(plan_, sqrtPriceX96);\n         uint256 priceX96 = Math.mulDiv(sqrtPriceX96, sqrtPriceX96, Q96);\n-        if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0) revert InvalidPrice();\n+        /// IfStatementMutation(`priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0` |==> `true`) of: `if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0) revert InvalidPrice();`\n+        if (true) revert InvalidPrice();\n         (plan_.swapAmountIn, plan_.zeroForOne) =\n             NormalLPMath.sizeSwap(fee, sqrtPriceX96, amount0, amount1, unit0, unit1);\n         plan_.needsSwap = plan_.swapAmountIn != 0;\n",
+    "id": "5",
+    "name": "mutants\\5\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -129,7 +129,8 @@\n         if (sqrtPriceX96 == 0 || fee >= FEE_DENOMINATOR) revert InvalidPrice();\n         (uint256 unit0, uint256 unit1) = _unitAmounts(plan_, sqrtPriceX96);\n         uint256 priceX96 = Math.mulDiv(sqrtPriceX96, sqrtPriceX96, Q96);\n-        if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0) revert InvalidPrice();\n+        /// BinaryOpMutation(`+` |==> `-`) of: `if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0) revert InvalidPrice();`\n+        if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96)-unit1 == 0) revert InvalidPrice();\n         (plan_.swapAmountIn, plan_.zeroForOne) =\n             NormalLPMath.sizeSwap(fee, sqrtPriceX96, amount0, amount1, unit0, unit1);\n         plan_.needsSwap = plan_.swapAmountIn != 0;\n",
+    "id": "6",
+    "name": "mutants\\6\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -132,7 +132,8 @@\n         if (priceX96 == 0 || Math.mulDiv(unit0, priceX96, Q96) + unit1 == 0) revert InvalidPrice();\n         (plan_.swapAmountIn, plan_.zeroForOne) =\n             NormalLPMath.sizeSwap(fee, sqrtPriceX96, amount0, amount1, unit0, unit1);\n-        plan_.needsSwap = plan_.swapAmountIn != 0;\n+        /// AssignmentMutation(`plan_.swapAmountIn != 0` |==> `true`) of: `plan_.needsSwap = plan_.swapAmountIn != 0;`\n+        plan_.needsSwap = true;\n     }\n \n     /**\n",
+    "id": "7",
+    "name": "mutants\\7\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -153,7 +153,8 @@\n                 uint128(uint256(plan_.weightsBps[i]) * LIQUIDITY_PROBE)\n             );\n             unit0 += amount0;\n-            unit1 += amount1;\n+            /// DeleteExpressionMutation(`unit1 += amount1` |==> `assert(true)`) of: `unit1 += amount1;`\n+            assert(true);\n         }\n     }\n }\n",
+    "id": "8",
+    "name": "mutants\\8\\src\\strategies\\NormalLPStrategy.sol",
+    "original": "src\\strategies\\NormalLPStrategy.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

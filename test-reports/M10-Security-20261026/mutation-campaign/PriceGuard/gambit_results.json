@@ -1,0 +1,66 @@
+[
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -218,7 +218,8 @@\n \n         _config[poolId] = config;\n         _dec0[poolId] = decimals0;\n-        _dec1[poolId] = decimals1;\n+        /// DeleteExpressionMutation(`_dec1[poolId] = decimals1` |==> `assert(true)`) of: `_dec1[poolId] = decimals1;`\n+        assert(true);\n \n         emit PairConfigSet(poolId, key, config, decimals0, decimals1);\n     }\n",
+    "id": "1",
+    "name": "mutants\\1\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -251,7 +251,8 @@\n         uint256 refPriceX96 = Math.mulDiv(sqrtRef, sqrtRef, 1 << 96); // aderyn-ignore(literal-instead-of-constant)\n         // A reference that rounds to zero in Q96 cannot be used as a denominator; treat it as no reference.\n         if (refPriceX96 == 0) return (false, type(uint256).max);\n-        uint256 diff = poolPriceX96 > refPriceX96 ? poolPriceX96 - refPriceX96 : refPriceX96 - poolPriceX96;\n+        /// BinaryOpMutation(`-` |==> `**`) of: `uint256 diff = poolPriceX96 > refPriceX96 ? poolPriceX96 - refPriceX96 : refPriceX96 - poolPriceX96;`\n+        uint256 diff = poolPriceX96 > refPriceX96 ? poolPriceX96 - refPriceX96 : refPriceX96**poolPriceX96;\n         devBps = Math.mulDiv(diff, BPS_DENOMINATOR, refPriceX96);\n         trusted = devBps <= config.maxDeviationBps;\n     }\n",
+    "id": "2",
+    "name": "mutants\\2\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -253,7 +253,8 @@\n         if (refPriceX96 == 0) return (false, type(uint256).max);\n         uint256 diff = poolPriceX96 > refPriceX96 ? poolPriceX96 - refPriceX96 : refPriceX96 - poolPriceX96;\n         devBps = Math.mulDiv(diff, BPS_DENOMINATOR, refPriceX96);\n-        trusted = devBps <= config.maxDeviationBps;\n+        /// AssignmentMutation(`devBps <= config.maxDeviationBps` |==> `true`) of: `trusted = devBps <= config.maxDeviationBps;`\n+        trusted = true;\n     }\n \n     /**\n",
+    "id": "3",
+    "name": "mutants\\3\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -298,7 +298,8 @@\n      * @param config Configuration to validate.\n      */\n     function _validateConfig(PoolKey calldata key, PairConfig calldata config) private view {\n-        if (config.chainlinkFeed == address(0) && config.v3Pool == address(0)) revert NoReference();\n+        /// IfStatementMutation(`config.chainlinkFeed == address(0) && config.v3Pool == address(0)` |==> `false`) of: `if (config.chainlinkFeed == address(0) && config.v3Pool == address(0)) revert NoReference();`\n+        if (false) revert NoReference();\n         if (config.maxDeviationBps < MIN_DEVIATION_BPS || config.maxDeviationBps > MAX_DEVIATION_BPS) {\n             revert InvalidDeviation();\n         }\n",
+    "id": "4",
+    "name": "mutants\\4\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "BinaryOpMutation",
+    "diff": "--- original\n+++ mutant\n@@ -521,7 +521,8 @@\n             int56[] memory tickCumulatives, uint160[] memory\n         ) {\n             if (tickCumulatives.length < 2) return (false, 0);\n-            int56 delta = tickCumulatives[1] - tickCumulatives[0];\n+            /// BinaryOpMutation(`-` |==> `/`) of: `int56 delta = tickCumulatives[1] - tickCumulatives[0];`\n+            int56 delta = tickCumulatives[1]/tickCumulatives[0];\n             int24 meanTick = _floorDivTick(delta, int56(uint56(config.twapWindow)));\n             sqrtPriceX96 = SqrtPriceMath.getSqrtPriceAtTick(meanTick);\n             if (config.invertV3) sqrtPriceX96 = _invertSqrtPrice(sqrtPriceX96);\n",
+    "id": "5",
+    "name": "mutants\\5\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -523,7 +523,8 @@\n             if (tickCumulatives.length < 2) return (false, 0);\n             int56 delta = tickCumulatives[1] - tickCumulatives[0];\n             int24 meanTick = _floorDivTick(delta, int56(uint56(config.twapWindow)));\n-            sqrtPriceX96 = SqrtPriceMath.getSqrtPriceAtTick(meanTick);\n+            /// DeleteExpressionMutation(`sqrtPriceX96 = SqrtPriceMath.getSqrtPriceAtTick(meanTick)` |==> `assert(true)`) of: `sqrtPriceX96 = SqrtPriceMath.getSqrtPriceAtTick(meanTick);`\n+            assert(true);\n             if (config.invertV3) sqrtPriceX96 = _invertSqrtPrice(sqrtPriceX96);\n             return (true, sqrtPriceX96);\n         } catch {\n",
+    "id": "6",
+    "name": "mutants\\6\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -547,7 +547,8 @@\n             uint80, int256 answer_, uint256, uint256 updatedAt_, uint80\n         ) {\n             answer = answer_;\n-            updatedAt = updatedAt_;\n+            /// DeleteExpressionMutation(`updatedAt = updatedAt_` |==> `assert(true)`) of: `updatedAt = updatedAt_;`\n+            assert(true);\n         } catch {\n             return false;\n         }\n",
+    "id": "7",
+    "name": "mutants\\7\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -637,7 +637,8 @@\n     function _floorDivTick(int56 numerator, int56 denominator) internal pure returns (int24 tick) {\n         int56 quotient = numerator / denominator;\n         int56 remainder = numerator % denominator;\n-        if (remainder != 0 && numerator < 0) quotient -= 1;\n+        /// AssignmentMutation(`1` |==> `0`) of: `if (remainder != 0 && numerator < 0) quotient -= 1;`\n+        if (remainder != 0 && numerator < 0) quotient -= 0;\n         tick = SafeCast.toInt24(quotient);\n     }\n }\n",
+    "id": "8",
+    "name": "mutants\\8\\src\\PriceGuard.sol",
+    "original": "src\\PriceGuard.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

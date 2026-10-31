@@ -1,0 +1,66 @@
+[
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -171,7 +171,8 @@\n         private\n         returns (uint256 amountOut)\n     {\n-        if (!factory.isVault(msg.sender) && msg.sender != zap) revert UnauthorizedCaller();\n+        /// IfStatementMutation(`!factory.isVault(msg.sender) && msg.sender != zap` |==> `false`) of: `if (!factory.isVault(msg.sender) && msg.sender != zap) revert UnauthorizedCaller();`\n+        if (false) revert UnauthorizedCaller();\n         if (amountIn == 0 || Currency.unwrap(key.currency0) == Currency.unwrap(key.currency1)) revert InvalidInput();\n         if (amountIn > type(uint128).max || minAmountOut > type(uint128).max) revert AmountTooLarge();\n         Currency input = zeroForOne ? key.currency0 : key.currency1;\n",
+    "id": "1",
+    "name": "mutants\\1\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "SwapArgumentsOperatorMutation",
+    "diff": "--- original\n+++ mutant\n@@ -195,7 +195,8 @@\n         if (!trusted) revert UntrustedPrice();\n         uint160 sqrtReference = priceGuard.referenceSqrtPriceX96(key);\n         uint256 floor = _oracleFloor(key, zeroForOne, amountIn, sqrtReference);\n-        if (minAmountOut < floor) revert SlippageTooHigh();\n+        /// SwapArgumentsOperatorMutation(`minAmountOut < floor` |==> `floor < minAmountOut`) of: `if (minAmountOut < floor) revert SlippageTooHigh();`\n+        if (floor < minAmountOut) revert SlippageTooHigh();\n         _executeRouter(key, zeroForOne, amountIn, minAmountOut, input, output);\n \n         uint256 refund;\n",
+    "id": "2",
+    "name": "mutants\\2\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -208,7 +208,8 @@\n         uint256 afterOut = output.balanceOfSelf();\n         if (afterOut < beforeOut) revert InsufficientOutput();\n         amountOut = afterOut - beforeOut;\n-        if (amountOut < minAmountOut || amountOut < floor) revert InsufficientOutput();\n+        /// IfStatementMutation(`amountOut < minAmountOut || amountOut < floor` |==> `false`) of: `if (amountOut < minAmountOut || amountOut < floor) revert InsufficientOutput();`\n+        if (false) revert InsufficientOutput();\n         input.transfer(msg.sender, refund); // aderyn-fp(unsafe-erc20-operation)\n         output.transfer(msg.sender, amountOut); // aderyn-fp(unsafe-erc20-operation)\n         emit SwapExecuted(msg.sender, key, zeroForOne, amountIn, amountOut);\n",
+    "id": "3",
+    "name": "mutants\\3\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -223,7 +223,8 @@\n      * @return beforeIn Executor balance of `input` before the pull.\n      */\n     function _pullExact(Currency input, uint256 amountIn) private returns (uint256 beforeIn) {\n-        beforeIn = input.balanceOfSelf();\n+        /// AssignmentMutation(`input.balanceOfSelf()` |==> `1`) of: `beforeIn = input.balanceOfSelf();`\n+        beforeIn = 1;\n         IERC20(Currency.unwrap(input)).safeTransferFrom(msg.sender, address(this), amountIn);\n         if (input.balanceOfSelf() - beforeIn != amountIn) revert InputBalanceMismatch();\n     }\n",
+    "id": "4",
+    "name": "mutants\\4\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "IfStatementMutation",
+    "diff": "--- original\n+++ mutant\n@@ -225,7 +225,8 @@\n     function _pullExact(Currency input, uint256 amountIn) private returns (uint256 beforeIn) {\n         beforeIn = input.balanceOfSelf();\n         IERC20(Currency.unwrap(input)).safeTransferFrom(msg.sender, address(this), amountIn);\n-        if (input.balanceOfSelf() - beforeIn != amountIn) revert InputBalanceMismatch();\n+        /// IfStatementMutation(`input.balanceOfSelf() - beforeIn != amountIn` |==> `true`) of: `if (input.balanceOfSelf() - beforeIn != amountIn) revert InputBalanceMismatch();`\n+        if (true) revert InputBalanceMismatch();\n     }\n \n     /**\n",
+    "id": "5",
+    "name": "mutants\\5\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "DeleteExpressionMutation",
+    "diff": "--- original\n+++ mutant\n@@ -263,7 +263,8 @@\n         params[1] = abi.encode(input, amountIn);\n         params[2] = abi.encode(output, minAmountOut);\n         bytes[] memory inputs = new bytes[](1);\n-        inputs[0] = abi.encode(actions, params);\n+        /// DeleteExpressionMutation(`inputs[0] = abi.encode(actions, params)` |==> `assert(true)`) of: `inputs[0] = abi.encode(actions, params);`\n+        assert(true);\n         universalRouter.execute{value: input.isNative() ? amountIn : 0}(\n             abi.encodePacked(V4_SWAP), inputs, block.timestamp\n         );\n",
+    "id": "6",
+    "name": "mutants\\6\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -286,7 +286,8 @@\n         if (key.fee >= FEE_DENOMINATOR || Math.mulDiv(sqrtReference, sqrtReference, Q96) == 0) {\n             revert UntrustedPrice();\n         }\n-        floor = SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, MAX_SLIPPAGE_BPS);\n+        /// AssignmentMutation(`SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, MAX_SLIPPAGE_BPS)` |==> `0`) of: `floor = SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, MAX_SLIPPAGE_BPS);`\n+        floor = 0;\n     }\n \n     /**\n",
+    "id": "7",
+    "name": "mutants\\7\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  },
+  {
+    "description": "AssignmentMutation",
+    "diff": "--- original\n+++ mutant\n@@ -307,7 +307,8 @@\n         uint16 slippageBps\n     ) external pure returns (uint256 floor) {\n         if (slippageBps > MAX_SLIPPAGE_BPS) revert SlippageTooHigh();\n-        floor = SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, slippageBps);\n+        /// AssignmentMutation(`SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, slippageBps)` |==> `1`) of: `floor = SwapMath.minAmountOut(key, zeroForOne, amountIn, sqrtReference, slippageBps);`\n+        floor = 1;\n     }\n \n     /**\n",
+    "id": "8",
+    "name": "mutants\\8\\src\\SwapExecutor.sol",
+    "original": "src\\SwapExecutor.sol",
+    "sourceroot": "\\\\?\\C:\\Users\\Abhay\\Desktop\\vortexa-core"
+  }
+]

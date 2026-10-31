@@ -1,0 +1,1 @@
+Killed 40/40 mutants (100.00%). The sole initial survivor was killed after adding the minOutFromReference regression test.

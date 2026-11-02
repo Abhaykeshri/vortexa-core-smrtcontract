@@ -54,10 +54,12 @@ match_path = "test/fork/*"
 [profile.halmos]
 dynamic_test_linking = false
 
+
 # RPC urls
 [rpc_endpoints]
 bsc = "https://bsc-dataseed.binance.org/"
 bsc_test = "https://data-seed-prebsc-1-s1.binance.org:8545"
+sepolia = "${SEPOLIA_RPC_URL}"
 
 # Etherscan
 [etherscan]

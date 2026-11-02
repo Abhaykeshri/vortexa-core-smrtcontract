@@ -160,7 +160,31 @@ contract NetworkConfig is Script {
      * @notice Ethereum mainnet chain id.
      */
     uint256 internal constant ETHEREUM_MAINNET_CHAIN_ID = 1;
+    uint256 internal constant SEPOLIA_CHAIN_ID = 11155111;
+// Ethereum Sepolia dependencies
+address internal constant SEPOLIA_STATE_VIEW =
+    0xe1dd9c3fa50edb962e442f60dfbc432e24537e4c;
 
+address internal constant SEPOLIA_POOL_MANAGER =
+    0xE03A1074c86CFeDd5C142C4F04F1a1536e203543;
+
+address internal constant SEPOLIA_POSITION_MANAGER =
+    0x429ba70129df741B2Ca2a85BC3A2a3328e5c09b4;
+
+address internal constant SEPOLIA_PERMIT2 =
+    0x000000000022D473030F116dDEE9F6B43aC78BA3;
+
+address internal constant SEPOLIA_UNIVERSAL_ROUTER =
+    0x3A9D48AB9751398BbFa63ad67599Bb04e4BdF98b;
+
+address internal constant SEPOLIA_CHAINLINK_ETH_USD =
+    0x694AA1769357215DE4FAC081bf1f309aDC325306;
+
+address internal constant SEPOLIA_WETH =
+    0xfff9976782d46cc05630d1f6ebab18b2324d6b14;
+
+address internal constant SEPOLIA_USDC =
+    0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238;
     /**
      * @notice Ethereum mainnet Uniswap V4 StateView.
      */
@@ -225,12 +249,16 @@ contract NetworkConfig is Script {
      * @return configs Network-specific deployment and PriceGuard configuration.
      */
     function getConfigs() public view returns (Configs memory configs) {
-        if (block.chainid == ETHEREUM_MAINNET_CHAIN_ID) {
-            return _mainnet();
-        }
-
-        revert UnsupportedNetwork(block.chainid);
+    if (block.chainid == ETHEREUM_MAINNET_CHAIN_ID) {
+        return _mainnet();
     }
+
+    if (block.chainid == SEPOLIA_CHAIN_ID) {
+        return _sepolia();
+    }
+
+    revert UnsupportedNetwork(block.chainid);
+}
 
     /**
      * @notice Builds the Ethereum mainnet configuration.
@@ -287,4 +315,62 @@ contract NetworkConfig is Script {
         configs.uniswapV3Factory = MAINNET_UNISWAP_V3_FACTORY;
         configs.usdc = MAINNET_USDC;
     }
+function _sepolia() private pure returns (Configs memory configs) {
+    configs.chainId = SEPOLIA_CHAIN_ID;
+    configs.priceGuard = 0x16e9bB9aB0A03Eefd5407b6A1DE187Fe0455917B;
+    configs.shapeLibrary = 0x100a9A2eB0444E60eA593BE853dBBb8E324dd9C1;
+
+    configs.stateView = IStateViewLike(SEPOLIA_STATE_VIEW);
+    configs.poolManager = SEPOLIA_POOL_MANAGER;
+    configs.positionManager = SEPOLIA_POSITION_MANAGER;
+    configs.permit2 = SEPOLIA_PERMIT2;
+    configs.universalRouter = SEPOLIA_UNIVERSAL_ROUTER;
+
+    configs.sequencerUptimeFeed = address(0);
+    configs.nativeWrapper = SEPOLIA_WETH;
+
+    configs.deploymentOwner = address(0);
+
+    configs.ethUsdcPoolKey = PoolKey({
+        currency0: Currency.wrap(address(0)),
+        currency1: Currency.wrap(SEPOLIA_USDC),
+        fee: V4_ETH_USDC_FEE,
+        tickSpacing: 20,
+        hooks: address(0)
+    });
+
+    configs.ethUsdcPriceConfig = IPriceGuard.PairConfig({
+        chainlinkFeed: SEPOLIA_CHAINLINK_ETH_USD,
+        invertFeed: false,
+        maxStaleness: 2 hours,
+        minAnswer: 100e8,
+        maxAnswer: 20_000e8,
+        v3Pool: address(0),
+        invertV3: false,
+        twapWindow: ETH_USDC_TWAP_WINDOW,
+        maxDeviationBps: ETH_USDC_MAX_DEVIATION_BPS
+    });
+
+    configs.timelock = 0x6C96C7A454e26a8Ced91f0F54638E9e0c3e6C954;
+    configs.swapExecutor = 0xF75eB1D043E33ad8Fa581bff63D6452Bc752A011;
+    configs.vaultImplementation = 0x145bf19548AbcDd5a0355596de00E4d8992a6B60;
+    configs.vaultFactory = 0xAf7bDb2E8E756af55c24B01fD2Cc0a7A79C1Aa21;
+    configs.feeCollector = 0xe3FFe17a8f006dD0F4e13DE51335a6Ff20E4b31f;
+    configs.vaultLens = 0x1A0bAD964be3F7e787a982865C5db6Dc1684Ce1d;
+    configs.normalStrategy = 0x8d5294A4B8F71078131620584F4cd21F6078FbF8;
+    configs.dipStrategy = 0x21D9626CCA2f3992Ab677b7E303A0BB039f6df78;
+    configs.pumpStrategy = 0x8ef913e037daceE310d7F965cDBAdf6981357E4D;
+    configs.zap = 0x657bfeB41365D7c8EC805D2e57506a4A035739eF;
+    configs.timelockDelay = 48 hours;
+    configs.initialProtocolFeeBps = 0;
+    configs.initialMaxProtocolFeeBps = 10_000;
+    configs.ethUsdcMaxDepositCap = 1_000_000_000;
+
+    configs.uniswapV3Factory = address(0);
+    configs.governanceSafe = 0x7cbaa5370f5d0ae1b8d61581c020859a84c55583;
+    configs.authorizedExecutor = 0x7cbaa5370f5d0ae1b8d61581c020859a84c55583;
+    configs.treasury = 0x7cbaa5370f5d0ae1b8d61581c020859a84c55583;
+    configs.usdc = SEPOLIA_USDC;
 }
+}
+
